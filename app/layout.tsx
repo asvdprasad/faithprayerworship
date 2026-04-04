@@ -10,6 +10,71 @@ export const metadata = {
   description: "Faith, prayer, worship, and spiritual notes",
 };
 
+function DesktopMenu() {
+  return (
+    <nav className="space-y-2">
+      <Link href="/" className="block rounded px-3 py-2 hover:bg-gray-100">
+        Home
+      </Link>
+
+      <Link
+        href="/articles"
+        className="block rounded px-3 py-2 hover:bg-gray-100"
+      >
+        Articles
+      </Link>
+
+      <Link
+        href="/prayer-notes"
+        className="block rounded px-3 py-2 hover:bg-gray-100"
+      >
+        Prayer Notes
+      </Link>
+
+      <div className="rounded px-3 py-2 font-medium text-gray-800">Worship</div>
+
+      <div className="ml-4 space-y-1 border-l border-gray-200 pl-3">
+        <Link
+          href="/worship"
+          className="block rounded px-3 py-2 text-sm hover:bg-gray-100"
+        >
+          Worship Songs
+        </Link>
+
+        <Link
+          href="/worship/current-week"
+          className="block rounded px-3 py-2 text-sm hover:bg-gray-100"
+        >
+          Current Week Worship Songs
+        </Link>
+      </div>
+
+      <Link
+        href="/media"
+        className="block rounded px-3 py-2 hover:bg-gray-100"
+      >
+        Media
+      </Link>
+    </nav>
+  );
+}
+
+function MobileMenu() {
+  return (
+    <div className="border-b bg-white p-4 md:hidden">
+      <details>
+        <summary className="cursor-pointer text-lg font-semibold text-gray-800">
+          Menu
+        </summary>
+
+        <div className="mt-3">
+          <DesktopMenu />
+        </div>
+      </details>
+    </div>
+  );
+}
+
 export default function RootLayout({
   children,
 }: {
@@ -17,70 +82,42 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="h-screen overflow-hidden bg-gray-100">
-        <div className="h-screen flex flex-col">
+      <body className="min-h-screen bg-gray-100">
+        <div className="min-h-screen flex flex-col">
           {/* Top Bar */}
-          <header className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between bg-blue-900 px-4 md:px-6 py-3 text-white shadow">
-            {/* Left: Title */}
-            <div>
-              <h1 className="text-xl font-bold">Faith Prayer Worship</h1>
-            </div>
+          <header className="bg-blue-900 px-4 py-3 text-white shadow md:px-6">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div>
+                <h1 className="text-xl font-bold">Faith Prayer Worship</h1>
+              </div>
 
-            {/* Right: Search */}
-            <div className="flex items-center">
-              <TopBarSearch />
+              <div className="w-full md:w-auto">
+                <TopBarSearch />
+              </div>
             </div>
           </header>
 
           {/* Main Area */}
-          <div className="flex flex-1 flex-col md:flex-row overflow-hidden">
-            {/* Left Menu */}
-            <aside className="w-full md:w-64 overflow-y-auto border-b md:border-b-0 md:border-r bg-white p-4">
+          <div className="flex flex-1 flex-col md:flex-row">
+            {/* Desktop Left Menu */}
+            <aside className="hidden md:block md:w-64 md:shrink-0 overflow-y-auto border-r bg-white p-4">
               <h2 className="mb-4 text-lg font-semibold">Menu</h2>
-
-              <nav className="space-y-2">
-                <a href="/" className="block rounded px-3 py-2 hover:bg-gray-100">
-                  Home
-                </a>
-
-                <a href="/articles" className="block rounded px-3 py-2 hover:bg-gray-100">
-                  Articles
-                </a>
-
-                <a
-                  href="/prayer-notes"
-                  className="block rounded px-3 py-2 hover:bg-gray-100"
-                >
-                  Prayer Notes
-                </a>
-
-                <div className="rounded px-3 py-2 font-medium text-gray-800">Worship</div>
-
-                <div className="ml-4 space-y-1 border-l border-gray-200 pl-3">
-                  <a href="/worship" className="block rounded px-3 py-2 text-sm hover:bg-gray-100">
-                    Worship Songs
-                  </a>
-                  <a
-                    href="/worship/current-week"
-                    className="block rounded px-3 py-2 text-sm hover:bg-gray-100"
-                  >
-                    Current Week Worship Songs
-                  </a>
-                </div>
-
-                <a href="/media" className="block rounded px-3 py-2 hover:bg-gray-100">
-                  Media
-                </a>
-              </nav>
+              <DesktopMenu />
             </aside>
 
-            {/* Center + Right Panel */}
-            <div className="flex flex-1 flex-col md:flex-row overflow-hidden">
-              {/* Center Main Content */}
-              <main className="flex-1 overflow-y-auto p-6">{children}</main>
+            {/* Main Content + Right Panel */}
+            <div className="flex flex-1 flex-col md:flex-row">
+              {/* Center Section */}
+              <div className="flex min-w-0 flex-1 flex-col">
+                <MobileMenu />
+
+                <main className="flex-1 overflow-y-auto p-4 md:p-6">
+                  {children}
+                </main>
+              </div>
 
               {/* Right Side Utility Panel */}
-              <aside className="w-full md:w-72 overflow-y-auto border-t md:border-t-0 md:border-l bg-gray-50 p-4">
+              <aside className="w-full border-t bg-gray-50 p-4 md:w-72 md:shrink-0 md:overflow-y-auto md:border-l md:border-t-0">
                 <div className="space-y-4">
                   <DateTimeBox />
                   <WeatherBox />
