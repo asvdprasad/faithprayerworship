@@ -17,12 +17,14 @@ export default function RootLayout({
       <body className="h-screen overflow-hidden bg-gray-100">
         <div className="h-screen flex flex-col">
           {/* Top Bar */}
-          <header className="flex items-center gap-6 bg-blue-900 px-6 py-3 text-white shadow">
-            <div className="min-w-fit">
+          <header className="flex items-center justify-between bg-blue-900 px-6 py-3 text-white shadow">
+            {/* Left: Title */}
+            <div>
               <h1 className="text-xl font-bold">Faith Prayer Worship</h1>
             </div>
 
-            <div className="flex-1">
+            {/* Right: Search */}
+            <div className="flex items-center">
               <TopBarSearch />
             </div>
           </header>

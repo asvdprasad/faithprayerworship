@@ -24,41 +24,39 @@ export default function TopBarSearch() {
     );
   };
 
-  return (
-    <div className="flex w-full items-center gap-3">
-      <div className="flex flex-1 items-center gap-2">
-        <input
-          type="text"
-          value={localQuery}
-          onChange={(e) => setLocalQuery(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleLocalSearch()}
-          placeholder="Search worship songs..."
-          className="w-full rounded border px-3 py-2 text-black"
-        />
-        <button
-          onClick={handleLocalSearch}
-          className="rounded bg-white px-3 py-2 text-sm font-medium text-blue-900"
-        >
-          Search Folder
-        </button>
-      </div>
+return (
+  <div className="flex items-center gap-2">
+    {/* Local Search */}
+    <input
+      type="text"
+      value={localQuery}
+      onChange={(e) => setLocalQuery(e.target.value)}
+      onKeyDown={(e) => e.key === "Enter" && handleLocalSearch()}
+      placeholder="Search songs..."
+      className="w-40 rounded border px-2 py-1 text-sm text-black"
+    />
+    <button
+      onClick={handleLocalSearch}
+      className="rounded bg-white px-2 py-1 text-xs font-medium text-blue-900"
+    >
+      Go
+    </button>
 
-      <div className="flex flex-1 items-center gap-2">
-        <input
-          type="text"
-          value={googleQuery}
-          onChange={(e) => setGoogleQuery(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleGoogleSearch()}
-          placeholder="Search Google for any song..."
-          className="w-full rounded border px-3 py-2 text-black"
-        />
-        <button
-          onClick={handleGoogleSearch}
-          className="rounded bg-yellow-400 px-3 py-2 text-sm font-medium text-black"
-        >
-          Google
-        </button>
-      </div>
-    </div>
-  );
+    {/* Google Search */}
+    <input
+      type="text"
+      value={googleQuery}
+      onChange={(e) => setGoogleQuery(e.target.value)}
+      onKeyDown={(e) => e.key === "Enter" && handleGoogleSearch()}
+      placeholder="Google..."
+      className="w-40 rounded border px-2 py-1 text-sm text-black"
+    />
+    <button
+      onClick={handleGoogleSearch}
+      className="rounded bg-yellow-400 px-2 py-1 text-xs font-medium text-black"
+    >
+      🔍
+    </button>
+  </div>
+);
 }
