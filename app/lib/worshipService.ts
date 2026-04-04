@@ -38,7 +38,6 @@ function getSongContentFromDirectory(directory: string, slug: string) {
   }
 
   const fileNames = fs.readdirSync(directory);
-
   const file = fileNames.find((fileName) => toSlug(fileName) === slug);
 
   if (!file) {
@@ -52,6 +51,34 @@ function getSongContentFromDirectory(directory: string, slug: string) {
     title: file.replace(/\.txt$/i, ""),
     lyrics: content,
   };
+}
+
+function searchSongsInDirectory(directory: string, query: string) {
+  const normalizedQuery = query.trim().toLowerCase();
+
+  if (!normalizedQuery || !fs.existsSync(directory)) {
+    return [];
+  }
+
+  const fileNames = fs.readdirSync(directory);
+
+  return fileNames
+    .filter((fileName) => fileName.toLowerCase().endsWith(".txt"))
+    .map((fileName) => {
+      const fullPath = path.join(directory, fileName);
+      const content = fs.readFileSync(fullPath, "utf8");
+
+      return {
+        slug: toSlug(fileName),
+        title: fileName.replace(/\.txt$/i, ""),
+        lyrics: content,
+      };
+    })
+    .filter(
+      (song) =>
+        song.title.toLowerCase().includes(normalizedQuery) ||
+        song.lyrics.toLowerCase().includes(normalizedQuery)
+    );
 }
 
 export function getAllSongs() {
@@ -71,28 +98,9 @@ export function getCurrentWeekSongContent(slug: string) {
 }
 
 export function searchSongs(query: string) {
-  const normalizedQuery = query.trim().toLowerCase();
-  if (!normalizedQuery || !fs.existsSync(worshipSongsDirectory)) {
-    return [];
-  }
+  return searchSongsInDirectory(worshipSongsDirectory, query);
+}
 
-  const fileNames = fs.readdirSync(worshipSongsDirectory);
-
-  return fileNames
-    .filter((fileName) => fileName.toLowerCase().endsWith(".txt"))
-    .map((fileName) => {
-      const fullPath = path.join(worshipSongsDirectory, fileName);
-      const content = fs.readFileSync(fullPath, "utf8");
-
-      return {
-        slug: toSlug(fileName),
-        title: fileName.replace(/\.txt$/i, ""),
-        lyrics: content,
-      };
-    })
-    .filter(
-      (song) =>
-        song.title.toLowerCase().includes(normalizedQuery) ||
-        song.lyrics.toLowerCase().includes(normalizedQuery)
-    );
+export function searchCurrentWeekSongs(query: string) {
+  return searchSongsInDirectory(worshipSongsThisWeekDirectory, query);
 }

@@ -1,6 +1,9 @@
 import Link from "next/link";
 import "./globals.css";
 import TopBarSearch from "./components/TopBarSearch";
+import DateTimeBox from "./components/DateTimeBox";
+import SmallInfoBox from "./components/SmallInfoBox";
+import WeatherBox from "./components/WeatherBox";
 
 export const metadata = {
   title: "Faith Prayer Worship",
@@ -32,60 +35,68 @@ export default function RootLayout({
           {/* Main Area */}
           <div className="flex flex-1 overflow-hidden">
             {/* Left Menu */}
-            <aside className="w-64 bg-white border-r p-4 overflow-y-auto">
+            <aside className="w-64 overflow-y-auto border-r bg-white p-4">
               <h2 className="mb-4 text-lg font-semibold">Menu</h2>
 
               <nav className="space-y-2">
-                <Link href="/" className="block rounded px-3 py-2 hover:bg-gray-100">
+                <a href="/" className="block rounded px-3 py-2 hover:bg-gray-100">
                   Home
-                </Link>
+                </a>
 
-                <Link
-                  href="/articles"
-                  className="block rounded px-3 py-2 hover:bg-gray-100"
-                >
+                <a href="/articles" className="block rounded px-3 py-2 hover:bg-gray-100">
                   Articles
-                </Link>
+                </a>
 
-                <Link
+                <a
                   href="/prayer-notes"
                   className="block rounded px-3 py-2 hover:bg-gray-100"
                 >
                   Prayer Notes
-                </Link>
+                </a>
 
-                {/* Worship Section */}
-                <div className="rounded px-3 py-2 font-medium text-gray-800">
-                  Worship
-                </div>
+                <div className="rounded px-3 py-2 font-medium text-gray-800">Worship</div>
 
                 <div className="ml-4 space-y-1 border-l border-gray-200 pl-3">
-                  <Link
-                    href="/worship"
-                    className="block rounded px-3 py-2 text-sm hover:bg-gray-100"
-                  >
+                  <a href="/worship" className="block rounded px-3 py-2 text-sm hover:bg-gray-100">
                     Worship Songs
-                  </Link>
-
-                  <Link
+                  </a>
+                  <a
                     href="/worship/current-week"
                     className="block rounded px-3 py-2 text-sm hover:bg-gray-100"
                   >
                     Current Week Worship Songs
-                  </Link>                  
+                  </a>
                 </div>
 
-                <Link
-                  href="/media"
-                  className="block rounded px-3 py-2 hover:bg-gray-100"
-                >
+                <a href="/media" className="block rounded px-3 py-2 hover:bg-gray-100">
                   Media
-                </Link>
+                </a>
               </nav>
             </aside>
 
-            {/* Center Section */}
-            <main className="flex-1 p-6 overflow-y-auto">{children}</main>
+            {/* Center + Right Panel */}
+            <div className="flex flex-1 overflow-hidden">
+              {/* Center Main Content */}
+              <main className="flex-1 overflow-y-auto p-6">{children}</main>
+
+              {/* Right Side Utility Panel */}
+              <aside className="w-72 overflow-y-auto border-l bg-gray-50 p-4">
+                <div className="space-y-4">
+                  <DateTimeBox />
+                  <WeatherBox />
+
+                  <SmallInfoBox
+                    title="Future Box 1"
+                    content="Reserved for future use"
+                  />
+
+                  <SmallInfoBox
+                    title="Future Box 2"
+                    content="Reserved for future use"
+                  />
+                </div>
+              </aside>
+            </div>
           </div>
         </div>
       </body>
