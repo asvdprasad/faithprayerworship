@@ -1,36 +1,26 @@
-export default function Home() {
+import Link from "next/link";
+import { worshipSongs } from "@/data/worshipSongs";
+
+export default function WorshipPage() {
   return (
-    <main className="min-h-screen px-6 py-12">
-      <div className="mx-auto max-w-4xl">
-        <h1 className="text-4xl font-bold">Faith Prayer Worship</h1>
-        <p className="mt-4 text-lg">
-          Welcome to FaithPrayerWorship.org — a place for faith, prayer,
-          worship, devotionals, and spiritual notes.
-        </p>
+    <div className="rounded-xl bg-white p-6 shadow">
+      <h2 className="mb-4 text-2xl font-bold">Worship Songs</h2>
+      <p className="mb-6 text-gray-600">
+        Select a song from the list below.
+      </p>
 
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <div className="rounded-2xl border p-5">
-            <h2 className="text-xl font-semibold">Articles</h2>
-            <p className="mt-2 text-sm">
-              Read faith-based articles, teachings, and reflections.
-            </p>
+      <div className="space-y-3">
+        {worshipSongs.map((song) => (
+          <div key={song.slug} className="rounded-lg border p-4 hover:bg-gray-50">
+            <Link
+              href={`/worship/${song.slug}`}
+              className="text-lg font-semibold text-blue-700"
+            >
+              {song.title}
+            </Link>
           </div>
-
-          <div className="rounded-2xl border p-5">
-            <h2 className="text-xl font-semibold">Prayer Notes</h2>
-            <p className="mt-2 text-sm">
-              Short prayer points, meditations, and spiritual reminders.
-            </p>
-          </div>
-
-          <div className="rounded-2xl border p-5">
-            <h2 className="text-xl font-semibold">Media</h2>
-            <p className="mt-2 text-sm">
-              Worship media, PDFs, and downloadable resources.
-            </p>
-          </div>
-        </div>
+        ))}
       </div>
-    </main>
+    </div>
   );
 }
