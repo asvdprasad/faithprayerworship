@@ -1,25 +1,31 @@
-import Link from "next/link";
-import { worshipSongs } from "@/data/worshipSongs";
+import { getDailyVerse } from "./lib/bibleService";
 
-export default function WorshipPage() {
+export default async function HomePage() {
+  const verse = await getDailyVerse();
+
   return (
-    <div className="rounded-xl bg-white p-6 shadow">
-      <h2 className="mb-4 text-2xl font-bold">Worship Songs</h2>
-      <p className="mb-6 text-gray-600">
-        Select a song from the list below.
-      </p>
+    <div className="space-y-6">
+      {/* Daily Verse */}
+      <div className="rounded-xl bg-white p-6 shadow">
+        <h2 className="mb-4 text-2xl font-bold text-blue-900">
+          Daily Verse
+        </h2>
 
-      <div className="space-y-3">
-        {worshipSongs.map((song) => (
-          <div key={song.slug} className="rounded-lg border p-4 hover:bg-gray-50">
-            <Link
-              href={`/worship/${song.slug}`}
-              className="text-lg font-semibold text-blue-700"
-            >
-              {song.title}
-            </Link>
-          </div>
-        ))}
+        <p className="mb-2 text-lg font-semibold text-gray-800">
+          {verse.reference}
+        </p>
+
+        <p className="whitespace-pre-line leading-8 text-gray-700">
+          {verse.text}
+        </p>
+      </div>
+
+      {/* Other content */}
+      <div className="rounded-xl bg-white p-6 shadow">
+        <h2 className="text-2xl font-bold">Welcome</h2>
+        <p className="mt-4 text-gray-600">
+          This is your homepage content area.
+        </p>
       </div>
     </div>
   );
