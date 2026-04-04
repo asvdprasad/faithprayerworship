@@ -30,7 +30,8 @@ const handleGoogleSearch = () => {
 };  
 
 return (
-  <div className="flex items-center gap-2">
+  // <div className="flex items-center gap-2">
+  <div className="flex w-full flex-col gap-2 md:w-auto md:flex-row md:items-center">
     {/* Local Search */}
     <input
       type="text"
@@ -38,7 +39,7 @@ return (
       onChange={(e) => setLocalQuery(e.target.value)}
       onKeyDown={(e) => e.key === "Enter" && handleLocalSearch()}
       placeholder="Search songs..."
-      className="w-40 rounded border bg-gray-100 px-2 py-1 text-sm text-black"
+      className="w-full md:w-40 rounded border bg-gray-100 px-2 py-1 text-sm text-black"
     />
     <button
       onClick={handleLocalSearch}
@@ -55,7 +56,7 @@ return (
       onChange={(e) => setGoogleQuery(e.target.value)}
       onKeyDown={(e) => e.key === "Enter" && handleGoogleSearch()}
       placeholder="Google..."
-      className="w-40 rounded border bg-gray-100 px-2 py-1 text-sm text-black"
+      className="w-full md:w-40 rounded border bg-gray-100 px-2 py-1 text-sm text-black"
     />
     <button
       onClick={handleGoogleSearch}

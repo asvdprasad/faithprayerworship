@@ -20,7 +20,7 @@ export default function RootLayout({
       <body className="h-screen overflow-hidden bg-gray-100">
         <div className="h-screen flex flex-col">
           {/* Top Bar */}
-          <header className="flex items-center justify-between bg-blue-900 px-6 py-3 text-white shadow">
+          <header className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between bg-blue-900 px-4 md:px-6 py-3 text-white shadow">
             {/* Left: Title */}
             <div>
               <h1 className="text-xl font-bold">Faith Prayer Worship</h1>
@@ -33,9 +33,9 @@ export default function RootLayout({
           </header>
 
           {/* Main Area */}
-          <div className="flex flex-1 overflow-hidden">
+          <div className="flex flex-1 flex-col md:flex-row overflow-hidden">
             {/* Left Menu */}
-            <aside className="w-64 overflow-y-auto border-r bg-white p-4">
+            <aside className="w-full md:w-64 overflow-y-auto border-b md:border-b-0 md:border-r bg-white p-4">
               <h2 className="mb-4 text-lg font-semibold">Menu</h2>
 
               <nav className="space-y-2">
@@ -75,12 +75,12 @@ export default function RootLayout({
             </aside>
 
             {/* Center + Right Panel */}
-            <div className="flex flex-1 overflow-hidden">
+            <div className="flex flex-1 flex-col md:flex-row overflow-hidden">
               {/* Center Main Content */}
               <main className="flex-1 overflow-y-auto p-6">{children}</main>
 
               {/* Right Side Utility Panel */}
-              <aside className="w-72 overflow-y-auto border-l bg-gray-50 p-4">
+              <aside className="w-full md:w-72 overflow-y-auto border-t md:border-t-0 md:border-l bg-gray-50 p-4">
                 <div className="space-y-4">
                   <DateTimeBox />
                   <WeatherBox />
