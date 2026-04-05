@@ -1,25 +1,20 @@
-import Link from "next/link";
 import { getAllSongs } from "../lib/worshipService";
+import WorshipSongsSelector from "./WorshipSongsSelector";
 
 export default function WorshipPage() {
   const songs = getAllSongs();
 
   return (
-    <div className="rounded-xl bg-white p-6 shadow">
-      <h1 className="mb-4 text-2xl font-bold">Worship Songs</h1>
+    <div className="rounded-2xl bg-white/80 p-4 shadow-lg backdrop-blur md:p-6">
+      <h1 className="mb-3 text-xl font-bold md:mb-4 md:text-2xl">
+        Worship Songs
+      </h1>
 
-      <div className="space-y-3">
-        {songs.map((song) => (
-          <div key={song.slug} className="border p-4 rounded hover:bg-gray-50">
-            <Link
-              href={`/worship/${song.slug}`}
-              className="text-blue-700 font-semibold"
-            >
-              {song.title}
-            </Link>
-          </div>
-        ))}
-      </div>
+      <p className="mb-4 text-sm text-gray-600 md:mb-6 md:text-base">
+        Select songs and submit them as Current Week Worship Songs.
+      </p>
+
+      <WorshipSongsSelector songs={songs} />
     </div>
   );
 }

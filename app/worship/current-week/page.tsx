@@ -1,26 +1,45 @@
 import Link from "next/link";
-import { getCurrentWeekSongs } from "../../lib/worshipService";
+import { getAllSongs, getCurrentWeekSelection } from "../../lib/worshipService";
+import { clearCurrentWeekSongs } from "../../actions/worshipActions";
 
 export default function CurrentWeekWorshipSongsPage() {
-  const songs = getCurrentWeekSongs();
+  const songs = getAllSongs();
+  const selectedSongs = getCurrentWeekSelection();
+
+  const currentWeekSongs = songs.filter((song) =>
+    selectedSongs.includes(song.slug)
+  );
 
   return (
-    <div className="rounded-xl bg-white p-6 shadow">
-      <h1 className="mb-4 text-2xl font-bold">Current Week Worship Songs</h1>
+    <div className="rounded-2xl bg-white/80 p-4 shadow-lg backdrop-blur md:p-6">
+      <div className="mb-4 flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Current Week Worship Songs</h1>
+
+        <form action={clearCurrentWeekSongs}>
+          <button
+            type="submit"
+            className="rounded bg-red-600 px-4 py-2 text-white hover:bg-red-500"
+          >
+            Clear Selection
+          </button>
+        </form>
+      </div>
+
       <p className="mb-6 text-gray-600">
-        Select a song from this week&apos;s worship list.
+        Songs selected for the current week.
       </p>
 
-      {songs.length === 0 ? (
-        <p className="text-red-600">
-          No songs found in data/WorshipSongsThisWeek.
-        </p>
+      {currentWeekSongs.length === 0 ? (
+        <p className="text-red-600">No songs selected for this week.</p>
       ) : (
         <div className="space-y-3">
-          {songs.map((song) => (
-            <div key={song.slug} className="rounded-lg border p-4 hover:bg-gray-50">
+          {currentWeekSongs.map((song) => (
+            <div
+              key={song.slug}
+              className="rounded-lg border p-4 hover:bg-gray-50"
+            >
               <Link
-                href={`/worship/current-week/${song.slug}`}
+                href={`/worship/${song.slug}`}
                 className="text-lg font-semibold text-blue-700"
               >
                 {song.title}

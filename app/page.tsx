@@ -6,7 +6,7 @@ export default async function HomePage() {
   return (
     <div className="space-y-6">
       {/* Daily Verse */}
-      <div className="rounded-xl bg-white p-6 shadow">
+      <div className="rounded-2xl bg-white/80 p-4 shadow-lg backdrop-blur md:p-6">
         <h2 className="mb-4 text-2xl font-bold text-blue-900">
           Daily Verse
         </h2>
@@ -21,7 +21,7 @@ export default async function HomePage() {
       </div>
 
       {/* Other content */}
-      <div className="rounded-xl bg-white p-6 shadow">
+      <div className="rounded-2xl bg-white/80 p-4 shadow-lg backdrop-blur md:p-6">
         <h2 className="text-2xl font-bold">Welcome</h2>
         <p className="mt-4 text-gray-600">
           This is your homepage content area.

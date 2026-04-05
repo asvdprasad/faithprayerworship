@@ -2,10 +2,10 @@ import fs from "fs";
 import path from "path";
 
 const worshipSongsDirectory = path.join(process.cwd(), "data", "WorshipSongs");
-const worshipSongsThisWeekDirectory = path.join(
+const currentWeekSelectionFile = path.join(
   process.cwd(),
   "data",
-  "WorshipSongsThisWeek"
+  "currentWeekSelection.json"
 );
 
 function toSlug(fileName: string) {
@@ -16,12 +16,18 @@ function toSlug(fileName: string) {
     .replace(/\s+/g, "-");
 }
 
-function getSongsFromDirectory(directory: string) {
-  if (!fs.existsSync(directory)) {
+function ensureSelectionFileExists() {
+  if (!fs.existsSync(currentWeekSelectionFile)) {
+    fs.writeFileSync(currentWeekSelectionFile, "[]", "utf8");
+  }
+}
+
+export function getAllSongs() {
+  if (!fs.existsSync(worshipSongsDirectory)) {
     return [];
   }
 
-  const fileNames = fs.readdirSync(directory);
+  const fileNames = fs.readdirSync(worshipSongsDirectory);
 
   return fileNames
     .filter((fileName) => fileName.toLowerCase().endsWith(".txt"))
@@ -32,19 +38,19 @@ function getSongsFromDirectory(directory: string) {
     }));
 }
 
-function getSongContentFromDirectory(directory: string, slug: string) {
-  if (!fs.existsSync(directory)) {
+export function getSongContent(slug: string) {
+  if (!fs.existsSync(worshipSongsDirectory)) {
     return null;
   }
 
-  const fileNames = fs.readdirSync(directory);
+  const fileNames = fs.readdirSync(worshipSongsDirectory);
   const file = fileNames.find((fileName) => toSlug(fileName) === slug);
 
   if (!file) {
     return null;
   }
 
-  const fullPath = path.join(directory, file);
+  const fullPath = path.join(worshipSongsDirectory, file);
   const content = fs.readFileSync(fullPath, "utf8");
 
   return {
@@ -53,54 +59,25 @@ function getSongContentFromDirectory(directory: string, slug: string) {
   };
 }
 
-function searchSongsInDirectory(directory: string, query: string) {
-  const normalizedQuery = query.trim().toLowerCase();
+export function getCurrentWeekSelection(): string[] {
+  ensureSelectionFileExists();
 
-  if (!normalizedQuery || !fs.existsSync(directory)) {
+  const raw = fs.readFileSync(currentWeekSelectionFile, "utf8");
+
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
     return [];
   }
-
-  const fileNames = fs.readdirSync(directory);
-
-  return fileNames
-    .filter((fileName) => fileName.toLowerCase().endsWith(".txt"))
-    .map((fileName) => {
-      const fullPath = path.join(directory, fileName);
-      const content = fs.readFileSync(fullPath, "utf8");
-
-      return {
-        slug: toSlug(fileName),
-        title: fileName.replace(/\.txt$/i, ""),
-        lyrics: content,
-      };
-    })
-    .filter(
-      (song) =>
-        song.title.toLowerCase().includes(normalizedQuery) ||
-        song.lyrics.toLowerCase().includes(normalizedQuery)
-    );
 }
 
-export function getAllSongs() {
-  return getSongsFromDirectory(worshipSongsDirectory);
-}
+export function saveCurrentWeekSelection(slugs: string[]) {
+  ensureSelectionFileExists();
 
-export function getSongContent(slug: string) {
-  return getSongContentFromDirectory(worshipSongsDirectory, slug);
-}
-
-export function getCurrentWeekSongs() {
-  return getSongsFromDirectory(worshipSongsThisWeekDirectory);
-}
-
-export function getCurrentWeekSongContent(slug: string) {
-  return getSongContentFromDirectory(worshipSongsThisWeekDirectory, slug);
-}
-
-export function searchSongs(query: string) {
-  return searchSongsInDirectory(worshipSongsDirectory, query);
-}
-
-export function searchCurrentWeekSongs(query: string) {
-  return searchSongsInDirectory(worshipSongsThisWeekDirectory, query);
+  fs.writeFileSync(
+    currentWeekSelectionFile,
+    JSON.stringify(slugs, null, 2),
+    "utf8"
+  );
 }
