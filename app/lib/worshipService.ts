@@ -81,3 +81,31 @@ export function saveCurrentWeekSelection(slugs: string[]) {
     "utf8"
   );
 }
+
+export function searchSongs(query: string) {
+  const normalizedQuery = query.trim().toLowerCase();
+
+  if (!normalizedQuery || !fs.existsSync(worshipSongsDirectory)) {
+    return [];
+  }
+
+  const fileNames = fs.readdirSync(worshipSongsDirectory);
+
+  return fileNames
+    .filter((fileName) => fileName.toLowerCase().endsWith(".txt"))
+    .map((fileName) => {
+      const fullPath = path.join(worshipSongsDirectory, fileName);
+      const content = fs.readFileSync(fullPath, "utf8");
+
+      return {
+        slug: toSlug(fileName),
+        title: fileName.replace(/\.txt$/i, ""),
+        lyrics: content,
+      };
+    })
+    .filter(
+      (song) =>
+        song.title.toLowerCase().includes(normalizedQuery) ||
+        song.lyrics.toLowerCase().includes(normalizedQuery)
+    );
+}
