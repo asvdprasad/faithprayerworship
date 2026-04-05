@@ -166,7 +166,9 @@ export default function RootLayout({
             <img
               src="/images/faith-banner.png"
               alt="Faith Prayer Worship Banner"
-              className="h-[220px] w-full object-cover md:h-[340px]"
+              className="h-[230px] w-full object-cover object-center md:h-[340px]"
+              // className="h-[150px] w-full object-center"
+              // className="h-[200px] w-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-b from-sky-500/15 via-transparent to-amber-100/20" />
             <div className="absolute inset-0 flex items-end justify-center p-4 md:p-8">
