@@ -4,9 +4,9 @@ import { getCurrentWeekSongContent } from "../../../lib/worshipService";
 export default async function CurrentWeekWorshipSongPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }) {
-  const { slug } = await params;
+  const { slug } = params;
   const song = getCurrentWeekSongContent(slug);
 
   if (!song) {
