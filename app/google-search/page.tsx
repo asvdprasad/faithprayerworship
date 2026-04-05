@@ -81,7 +81,7 @@ export default async function GoogleSearchPage({
             <p className="text-gray-600">No matching songs found this week.</p>
           ) : (
             <div className="space-y-3">
-              {currentWeekMatches.map((song) => (
+              {currentWeekMatches.filter(Boolean).map((song) => (
                 <div key={song.slug} className="rounded border p-4">
                   <Link
                     href={`/worship/current-week/${song.slug}`}

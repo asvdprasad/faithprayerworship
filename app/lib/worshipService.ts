@@ -34,7 +34,7 @@ export function searchCurrentWeekSongs(query: string) {
 
   const selected = getCurrentWeekSelection();
 
-  return selected
+  const songs = selected
     .map((slug) => {
       const song = getSongContent(slug);
       if (!song) return null;
@@ -46,11 +46,15 @@ export function searchCurrentWeekSongs(query: string) {
       };
     })
     .filter(
-      (song) =>
-        song &&
-        (song.title.toLowerCase().includes(normalizedQuery) ||
-          song.lyrics.toLowerCase().includes(normalizedQuery))
+      (song): song is { slug: string; title: string; lyrics: string } =>
+        song !== null
     );
+
+  return songs.filter(
+    (song) =>
+      song.title.toLowerCase().includes(normalizedQuery) ||
+      song.lyrics.toLowerCase().includes(normalizedQuery)
+  );
 }
 
 function ensureSelectionFileExists() {
