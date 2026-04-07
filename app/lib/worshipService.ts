@@ -1,15 +1,9 @@
 import fs from "fs";
 import path from "path";
-import { redis } from "./redis";
+import { cookies } from "next/headers";
 
 const worshipSongsDirectory = path.join(process.cwd(), "data", "WorshipSongs");
-const currentWeekSelectionFile = path.join(
-  process.cwd(),
-  "data",
-  "currentWeekSelection.json"
-);
-
-const CURRENT_WEEK_SELECTION_KEY = "worship:current-week-selection";
+const CURRENT_WEEK_COOKIE = "current-week-selection";
 
 function toSlug(fileName: string) {
   return fileName
@@ -17,39 +11,6 @@ function toSlug(fileName: string) {
     .trim()
     .toLowerCase()
     .replace(/\s+/g, "-");
-}
-
-function ensureSelectionFileExists() {
-  if (!fs.existsSync(currentWeekSelectionFile)) {
-    fs.writeFileSync(currentWeekSelectionFile, "[]", "utf8");
-  }
-}
-
-function getCurrentWeekSelectionFromFile(): string[] {
-  ensureSelectionFileExists();
-
-  const raw = fs.readFileSync(currentWeekSelectionFile, "utf8");
-
-  try {
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-}
-
-function saveCurrentWeekSelectionToFile(slugs: string[]) {
-  ensureSelectionFileExists();
-
-  fs.writeFileSync(
-    currentWeekSelectionFile,
-    JSON.stringify(slugs, null, 2),
-    "utf8"
-  );
-}
-
-function isProduction() {
-  return process.env.NODE_ENV === "production";
 }
 
 export function getAllSongs() {
@@ -90,35 +51,38 @@ export function getSongContent(slug: string) {
 }
 
 export async function getCurrentWeekSelection(): Promise<string[]> {
-  if (redis) {
-    const data = await redis.get<string[]>(CURRENT_WEEK_SELECTION_KEY);
-    return Array.isArray(data) ? data : [];
+  const cookieStore = await cookies();
+  const raw = cookieStore.get(CURRENT_WEEK_COOKIE)?.value;
+
+  if (!raw) {
+    return [];
   }
 
-  if (isProduction()) {
-    throw new Error(
-      "Redis is not configured in production. Set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN in Vercel."
-    );
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed.map(String) : [];
+  } catch {
+    return [];
   }
-
-  return getCurrentWeekSelectionFromFile();
 }
 
 export async function saveCurrentWeekSelection(
   slugs: string[]
 ): Promise<void> {
-  if (redis) {
-    await redis.set(CURRENT_WEEK_SELECTION_KEY, slugs);
-    return;
-  }
+  const cookieStore = await cookies();
 
-  if (isProduction()) {
-    throw new Error(
-      "Cannot save current week selection in production without Redis configuration."
-    );
-  }
+  cookieStore.set(CURRENT_WEEK_COOKIE, JSON.stringify(slugs), {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 7,
+  });
+}
 
-  saveCurrentWeekSelectionToFile(slugs);
+export async function clearCurrentWeekSelection(): Promise<void> {
+  const cookieStore = await cookies();
+  cookieStore.delete(CURRENT_WEEK_COOKIE);
 }
 
 export async function getCurrentWeekSongContent(slug: string) {

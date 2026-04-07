@@ -1,7 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { saveCurrentWeekSelection } from "../lib/worshipService";
+import {
+  clearCurrentWeekSelection,
+  saveCurrentWeekSelection,
+} from "../lib/worshipService";
 
 export async function setCurrentWeekSongs(formData: FormData): Promise<void> {
   const selectedSongs = formData
@@ -15,7 +18,7 @@ export async function setCurrentWeekSongs(formData: FormData): Promise<void> {
 }
 
 export async function clearCurrentWeekSongs(): Promise<void> {
-  await saveCurrentWeekSelection([]);
+  await clearCurrentWeekSelection();
 
   revalidatePath("/worship");
   revalidatePath("/worship/current-week");
