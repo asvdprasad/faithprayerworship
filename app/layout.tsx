@@ -144,7 +144,7 @@ export default function RootLayout({
       <body className="min-h-screen bg-gradient-to-b from-sky-50 via-blue-50 to-amber-50 text-gray-900">
         <div className="min-h-screen flex flex-col">
           {/* Top Bar */}
-          <header className="sticky top-0 z-30 border-b border-white/20 bg-gradient-to-r from-sky-600/75 via-blue-500/70 to-amber-300/70 px-4 py-3 text-white shadow backdrop-blur md:px-6">
+          <header className="sticky top-0 z-30 border-b border-white/20 bg-gradient-to-r from-sky-600 via-blue-500 to-amber-300 px-4 py-3 text-white shadow md:px-6">
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
                 <h1 className="text-2xl font-bold tracking-tight">
