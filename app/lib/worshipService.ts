@@ -48,6 +48,10 @@ function saveCurrentWeekSelectionToFile(slugs: string[]) {
   );
 }
 
+function isProduction() {
+  return process.env.NODE_ENV === "production";
+}
+
 export function getAllSongs() {
   if (!fs.existsSync(worshipSongsDirectory)) {
     return [];
@@ -91,6 +95,12 @@ export async function getCurrentWeekSelection(): Promise<string[]> {
     return Array.isArray(data) ? data : [];
   }
 
+  if (isProduction()) {
+    throw new Error(
+      "Redis is not configured in production. Set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN in Vercel."
+    );
+  }
+
   return getCurrentWeekSelectionFromFile();
 }
 
@@ -100,6 +110,12 @@ export async function saveCurrentWeekSelection(
   if (redis) {
     await redis.set(CURRENT_WEEK_SELECTION_KEY, slugs);
     return;
+  }
+
+  if (isProduction()) {
+    throw new Error(
+      "Cannot save current week selection in production without Redis configuration."
+    );
   }
 
   saveCurrentWeekSelectionToFile(slugs);
