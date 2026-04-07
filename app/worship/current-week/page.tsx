@@ -2,9 +2,11 @@ import Link from "next/link";
 import { getAllSongs, getCurrentWeekSelection } from "../../lib/worshipService";
 import { clearCurrentWeekSongs } from "../../actions/worshipActions";
 
-export default function CurrentWeekWorshipSongsPage() {
+export const dynamic = "force-dynamic";
+
+export default async function CurrentWeekWorshipSongsPage() {
   const songs = getAllSongs();
-  const selectedSongs = getCurrentWeekSelection();
+  const selectedSongs = await getCurrentWeekSelection();
 
   const currentWeekSongs = songs.filter((song) =>
     selectedSongs.includes(song.slug)
@@ -25,9 +27,7 @@ export default function CurrentWeekWorshipSongsPage() {
         </form>
       </div>
 
-      <p className="mb-6 text-gray-600">
-        Songs selected for the current week.
-      </p>
+      <p className="mb-6 text-gray-600">Songs selected for the current week.</p>
 
       {currentWeekSongs.length === 0 ? (
         <p className="text-red-600">No songs selected for this week.</p>
@@ -39,7 +39,7 @@ export default function CurrentWeekWorshipSongsPage() {
               className="rounded-lg border p-4 hover:bg-gray-50"
             >
               <Link
-                href={`/worship/${song.slug}`}
+                href={`/worship/current-week/${song.slug}`}
                 className="text-lg font-semibold text-blue-700"
               >
                 {song.title}

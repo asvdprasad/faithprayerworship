@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { redis } from "./redis";
 
 const worshipSongsDirectory = path.join(process.cwd(), "data", "WorshipSongs");
 const currentWeekSelectionFile = path.join(
@@ -7,6 +8,8 @@ const currentWeekSelectionFile = path.join(
   "data",
   "currentWeekSelection.json"
 );
+
+const CURRENT_WEEK_SELECTION_KEY = "worship:current-week-selection";
 
 function toSlug(fileName: string) {
   return fileName
@@ -16,51 +19,33 @@ function toSlug(fileName: string) {
     .replace(/\s+/g, "-");
 }
 
-export function getCurrentWeekSongContent(slug: string) {
-  const selected = getCurrentWeekSelection();
-  const allSongs = getAllSongs();
-
-  if (!selected.includes(slug)) {
-    return null;
-  }
-
-  return getSongContent(slug);
-}
-
-export function searchCurrentWeekSongs(query: string) {
-  const normalizedQuery = query.trim().toLowerCase();
-
-  if (!normalizedQuery) return [];
-
-  const selected = getCurrentWeekSelection();
-
-  const songs = selected
-    .map((slug) => {
-      const song = getSongContent(slug);
-      if (!song) return null;
-
-      return {
-        slug,
-        title: song.title,
-        lyrics: song.lyrics,
-      };
-    })
-    .filter(
-      (song): song is { slug: string; title: string; lyrics: string } =>
-        song !== null
-    );
-
-  return songs.filter(
-    (song) =>
-      song.title.toLowerCase().includes(normalizedQuery) ||
-      song.lyrics.toLowerCase().includes(normalizedQuery)
-  );
-}
-
 function ensureSelectionFileExists() {
   if (!fs.existsSync(currentWeekSelectionFile)) {
     fs.writeFileSync(currentWeekSelectionFile, "[]", "utf8");
   }
+}
+
+function getCurrentWeekSelectionFromFile(): string[] {
+  ensureSelectionFileExists();
+
+  const raw = fs.readFileSync(currentWeekSelectionFile, "utf8");
+
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveCurrentWeekSelectionToFile(slugs: string[]) {
+  ensureSelectionFileExists();
+
+  fs.writeFileSync(
+    currentWeekSelectionFile,
+    JSON.stringify(slugs, null, 2),
+    "utf8"
+  );
 }
 
 export function getAllSongs() {
@@ -100,26 +85,63 @@ export function getSongContent(slug: string) {
   };
 }
 
-export function getCurrentWeekSelection(): string[] {
-  ensureSelectionFileExists();
-
-  const raw = fs.readFileSync(currentWeekSelectionFile, "utf8");
-
-  try {
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
+export async function getCurrentWeekSelection(): Promise<string[]> {
+  if (redis) {
+    const data = await redis.get<string[]>(CURRENT_WEEK_SELECTION_KEY);
+    return Array.isArray(data) ? data : [];
   }
+
+  return getCurrentWeekSelectionFromFile();
 }
 
-export function saveCurrentWeekSelection(slugs: string[]) {
-  ensureSelectionFileExists();
+export async function saveCurrentWeekSelection(
+  slugs: string[]
+): Promise<void> {
+  if (redis) {
+    await redis.set(CURRENT_WEEK_SELECTION_KEY, slugs);
+    return;
+  }
 
-  fs.writeFileSync(
-    currentWeekSelectionFile,
-    JSON.stringify(slugs, null, 2),
-    "utf8"
+  saveCurrentWeekSelectionToFile(slugs);
+}
+
+export async function getCurrentWeekSongContent(slug: string) {
+  const selected = await getCurrentWeekSelection();
+
+  if (!selected.includes(slug)) {
+    return null;
+  }
+
+  return getSongContent(slug);
+}
+
+export async function searchCurrentWeekSongs(query: string) {
+  const normalizedQuery = query.trim().toLowerCase();
+
+  if (!normalizedQuery) return [];
+
+  const selected = await getCurrentWeekSelection();
+
+  const songs = selected
+    .map((slug) => {
+      const song = getSongContent(slug);
+      if (!song) return null;
+
+      return {
+        slug,
+        title: song.title,
+        lyrics: song.lyrics,
+      };
+    })
+    .filter(
+      (song): song is { slug: string; title: string; lyrics: string } =>
+        song !== null
+    );
+
+  return songs.filter(
+    (song) =>
+      song.title.toLowerCase().includes(normalizedQuery) ||
+      song.lyrics.toLowerCase().includes(normalizedQuery)
   );
 }
 

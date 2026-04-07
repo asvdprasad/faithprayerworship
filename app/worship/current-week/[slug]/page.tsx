@@ -1,13 +1,15 @@
 import { notFound } from "next/navigation";
 import { getCurrentWeekSongContent } from "../../../lib/worshipService";
 
+export const dynamic = "force-dynamic";
+
 export default async function CurrentWeekWorshipSongPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const { slug } = params;
-  const song = getCurrentWeekSongContent(slug);
+  const { slug } = await params;
+  const song = await getCurrentWeekSongContent(slug);
 
   if (!song) {
     notFound();

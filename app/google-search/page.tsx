@@ -13,7 +13,7 @@ export default async function GoogleSearchPage({
   const query = params.q?.trim() || "";
 
   const worshipMatches = query ? searchSongs(query) : [];
-  const currentWeekMatches = query ? searchCurrentWeekSongs(query) : [];
+  const currentWeekMatches = query ? await searchCurrentWeekSongs(query) : [];
   const googleUrl = query
     ? `https://www.google.com/search?q=${encodeURIComponent(query)}`
     : "";
