@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { saveCurrentWeekSelection } from "../lib/worshipService";
 
-export async function setCurrentWeekSongs(formData: FormData) {
+export async function setCurrentWeekSongs(formData: FormData): Promise<void> {
   const selectedSongs = formData.getAll("selectedSongs") as string[];
 
   saveCurrentWeekSelection(selectedSongs);
@@ -12,9 +12,13 @@ export async function setCurrentWeekSongs(formData: FormData) {
   revalidatePath("/worship/current-week");
 }
 
-export async function clearCurrentWeekSongs() {
-  saveCurrentWeekSelection([]);
+export async function clearCurrentWeekSongs(): Promise<void> {
+  try {
+    saveCurrentWeekSelection([]);
 
-  revalidatePath("/worship");
-  revalidatePath("/worship/current-week");
+    revalidatePath("/worship");
+    revalidatePath("/worship/current-week");
+  } catch (error) {
+    console.error("Error clearing songs:", error);
+  }
 }

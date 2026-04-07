@@ -18,7 +18,7 @@ export default function CurrentWeekWorshipSongsPage() {
         <form action={clearCurrentWeekSongs}>
           <button
             type="submit"
-            className="rounded bg-red-600 px-4 py-2 text-white hover:bg-red-500"
+            className="rounded bg-red-600 px-4 py-2 text-white"
           >
             Clear Selection
           </button>
