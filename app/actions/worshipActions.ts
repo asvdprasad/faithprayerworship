@@ -15,13 +15,8 @@ export async function setCurrentWeekSongs(formData: FormData): Promise<void> {
 }
 
 export async function clearCurrentWeekSongs(): Promise<void> {
-  try {
-    await saveCurrentWeekSelection([]);
+  await saveCurrentWeekSelection([]);
 
-    revalidatePath("/worship");
-    revalidatePath("/worship/current-week");
-  } catch (error) {
-    console.error("clearCurrentWeekSongs failed:", error);
-    throw error;
-  }
+  revalidatePath("/worship");
+  revalidatePath("/worship/current-week");
 }
