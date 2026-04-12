@@ -11,7 +11,7 @@ export default function WorshipPage() {
       </h1>
 
       <p className="mb-4 text-sm text-gray-600 md:mb-6 md:text-base">
-        Select songs and submit them as Current Week Worship Songs.
+        Select songs and add them to your Current Week Plan or Multi-Week Plan.
       </p>
 
       <WorshipSongsSelector songs={songs} />
